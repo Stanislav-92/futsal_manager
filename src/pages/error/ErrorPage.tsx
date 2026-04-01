@@ -22,8 +22,8 @@ export default function ErrorPage() {
 
   return (
     <>
-      <MainNavigation></MainNavigation>
-      <Box sx={{ minHeight: '100vh', px: 3, py: 3 }}>
+      <MainNavigation />
+      <Box sx={{ px: 3, py: 3 }}>
         <Typography variant="h5" sx={{ mb: 2 }}>
           {title}
         </Typography>
