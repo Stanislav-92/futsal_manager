@@ -1,6 +1,6 @@
 import { Box } from '@mui/material';
 import MainNavigation from './MainNavigation';
-import { Outlet, useNavigation } from 'react-router-dom';
+import { Outlet, ScrollRestoration, useNavigation } from 'react-router-dom';
 
 export default function RootLayout() {
   const navigation = useNavigation();
@@ -10,8 +10,9 @@ export default function RootLayout() {
   return (
     <>
       <MainNavigation />
-      <Box sx={{ minHeight: '100vh', px: 3, py: 3 }}>
+      <Box sx={{ px: 3, py: 3 }}>
         {isLoading ? <p>Loading...</p> : <Outlet />}
+        <ScrollRestoration />
       </Box>
     </>
   );
