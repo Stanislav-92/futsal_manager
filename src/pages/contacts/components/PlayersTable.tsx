@@ -25,8 +25,10 @@ import {
 } from './PlayersTable.styles';
 import { useDeletePlayer, useUpdatePlayer } from '../hooks/players.queries';
 import { useState } from 'react';
-import DeletePlayerDialog from './DeletePlayerDialog';
+import ConfirmDialog from '@/shared/components/ConfirmDialog';
 import PlayerFormDialog from './PlayerFormDialog';
+import { useToast } from '@/shared/hooks/useToast';
+import Toast from '@/shared/components/Toast';
 
 interface PlayersTableProps {
   players: PlayerContact[];
@@ -37,6 +39,8 @@ export default function PlayersTable({ players }: PlayersTableProps) {
   const [playerToEdit, setPlayerToEdit] = useState<PlayerContact | null>(null);
   const { mutate: deletePlayer, isPending: isDeleting } = useDeletePlayer();
   const { mutate: updatePlayer, isPending: isUpdating } = useUpdatePlayer();
+
+  const { toast, showToast, hideToast } = useToast();
 
   return (
     <TableContainer component={Paper} elevation={0} sx={tableContainerSx}>
@@ -118,18 +122,32 @@ export default function PlayersTable({ players }: PlayersTableProps) {
         )}
       </Table>
 
-      <DeletePlayerDialog
+      <ConfirmDialog
         open={playerToDelete !== null}
+        title="Delete player"
+        message={
+          <>
+            Are you sure you want to delete{' '}
+            <strong>
+              {playerToDelete?.name} {playerToDelete?.lastName}
+            </strong>
+            ? This action cannot be undone.
+          </>
+        }
+        confirmLabel="Delete"
+        isPending={isDeleting}
         onClose={() => setPlayerToDelete(null)}
         onConfirm={() => {
           if (playerToDelete) {
             deletePlayer(playerToDelete.id, {
-              onSuccess: () => setPlayerToDelete(null),
+              onSuccess: () => {
+                setPlayerToDelete(null);
+                showToast('Player deleted successfully');
+              },
+              onError: () => showToast('Failed to delete player', 'error'),
             });
           }
         }}
-        isPending={isDeleting}
-        playerName={playerToDelete ? `${playerToDelete.name} ${playerToDelete.lastName}` : ''}
       />
 
       <PlayerFormDialog
@@ -141,7 +159,11 @@ export default function PlayersTable({ players }: PlayersTableProps) {
             updatePlayer(
               { id: playerToEdit.id, data: { ...data, matches: playerToEdit.matches } },
               {
-                onSuccess: () => setPlayerToEdit(null),
+                onSuccess: () => {
+                  setPlayerToEdit(null);
+                  showToast('Player updated successfully');
+                },
+                onError: () => showToast('Failed to update player', 'error'),
               },
             );
           }
@@ -156,6 +178,8 @@ export default function PlayersTable({ players }: PlayersTableProps) {
         title="Edit player"
         submitLabel="Update"
       />
+
+      {toast && <Toast message={toast.message} severity={toast.severity} onClose={hideToast} />}
     </TableContainer>
   );
 }
