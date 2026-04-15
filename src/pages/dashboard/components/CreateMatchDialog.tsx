@@ -3,8 +3,9 @@ import { Controller, useForm } from 'react-hook-form';
 import { DatePicker, LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import dayjs from 'dayjs';
+import { validateMatchDate } from '@/shared/utils/date.utils';
 
-interface CreateMatchFormData {
+export interface CreateMatchFormData {
   date: dayjs.Dayjs | null;
 }
 
@@ -45,11 +46,7 @@ export default function CreateMatchDialog({
             defaultValue={null}
             rules={{
               required: 'Date is required',
-              validate: (value) => {
-                if (!value || !value.isValid()) return 'Invalid date';
-                if (value.isBefore(dayjs(), 'day')) return 'Date cannot be in the past';
-                return true;
-              },
+              validate: validateMatchDate,
             }}
             render={({ field }) => (
               <DatePicker
