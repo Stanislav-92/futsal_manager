@@ -49,9 +49,6 @@ export const useAddPlayer = () => {
   return useMutation({
     mutationFn: (player: Omit<PlayerContact, 'id'>) => addPlayer(player),
     onSuccess: () => queryClient.invalidateQueries({ queryKey: playersQueryKey }),
-    onError: (error: Error) => {
-      console.error(error.message);
-    },
   });
 };
 

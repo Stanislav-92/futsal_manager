@@ -5,14 +5,34 @@ import { useAddPlayer, usePlayers } from './hooks/players.queries';
 import LoadingSpinner from '@/shared/components/LoadingSpinner';
 import { useState } from 'react';
 import PlayerFormDialog from './components/PlayerFormDialog';
+import { useToast } from '@/shared/hooks/useToast';
+import Toast from '@/shared/components/Toast';
+import type { PlayerContact } from './types/player.types';
 
 export default function ContactsPage() {
   const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
   const { data: players = [], isLoading, isError } = usePlayers();
   const { mutate: addPlayer, isPending } = useAddPlayer();
 
+  const { toast, showToast, hideToast } = useToast();
+
   if (isLoading) return <LoadingSpinner />;
   if (isError) return <Alert severity="error">Failed to load players</Alert>;
+
+  const handleAddPlayer = (data: Omit<PlayerContact, 'id' | 'matches'>) => {
+    addPlayer(
+      { ...data, matches: 0 },
+      {
+        onSuccess: () => {
+          setIsAddDialogOpen(false);
+          showToast('Player added successfully');
+        },
+        onError: (error) => {
+          showToast(error.message, 'error');
+        },
+      },
+    );
+  };
 
   return (
     <Box sx={{ maxWidth: '90%', mx: 'auto' }}>
@@ -47,18 +67,13 @@ export default function ContactsPage() {
         key={isAddDialogOpen ? 'open' : 'closed'}
         open={isAddDialogOpen}
         onClose={() => setIsAddDialogOpen(false)}
-        onSubmit={(data) =>
-          addPlayer(
-            { ...data, matches: 0 },
-            {
-              onSuccess: () => setIsAddDialogOpen(false),
-            },
-          )
-        }
+        onSubmit={handleAddPlayer}
         isPending={isPending}
         title="Add player"
         submitLabel="Save"
       />
+
+      {toast && <Toast message={toast.message} severity={toast.severity} onClose={hideToast} />}
     </Box>
   );
 }

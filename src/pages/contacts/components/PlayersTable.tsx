@@ -14,7 +14,6 @@ import {
 } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
-import PeopleOutlineIcon from '@mui/icons-material/PeopleOutline';
 import type { PlayerContact } from '../types/player.types';
 import {
   tableBodyRowSx,
@@ -23,20 +22,29 @@ import {
   tableHeaderSx,
   tableHeadRowSx,
 } from './PlayersTable.styles';
-import { useDeletePlayer, useUpdatePlayer } from '../hooks/players.queries';
-import { useState } from 'react';
-import DeletePlayerDialog from './DeletePlayerDialog';
+import ConfirmDialog from '@/shared/components/ConfirmDialog';
 import PlayerFormDialog from './PlayerFormDialog';
+import Toast from '@/shared/components/Toast';
+import PlayersTableEmptyState from './PlayersTableEmptyState';
+import { usePlayersTableActions } from '../hooks/usePlayersTableActions';
 
 interface PlayersTableProps {
   players: PlayerContact[];
 }
 
 export default function PlayersTable({ players }: PlayersTableProps) {
-  const [playerToDelete, setPlayerToDelete] = useState<PlayerContact | null>(null);
-  const [playerToEdit, setPlayerToEdit] = useState<PlayerContact | null>(null);
-  const { mutate: deletePlayer, isPending: isDeleting } = useDeletePlayer();
-  const { mutate: updatePlayer, isPending: isUpdating } = useUpdatePlayer();
+  const {
+    playerToDelete,
+    playerToEdit,
+    isDeleting,
+    isUpdating,
+    toast,
+    hideToast,
+    setPlayerToDelete,
+    setPlayerToEdit,
+    handleDeleteConfirm,
+    handleEditSubmit,
+  } = usePlayersTableActions();
 
   return (
     <TableContainer component={Paper} elevation={0} sx={tableContainerSx}>
@@ -62,19 +70,7 @@ export default function PlayersTable({ players }: PlayersTableProps) {
         </TableHead>
 
         {players.length === 0 ? (
-          <TableBody>
-            <TableRow>
-              <TableCell colSpan={6} align="center" sx={{ py: 8 }}>
-                <PeopleOutlineIcon sx={{ fontSize: 48, color: 'text.secondary', mb: 1 }} />
-                <Typography variant="body1" color="textSecondary">
-                  No players yet
-                </Typography>
-                <Typography variant="body2" color="textSecondary">
-                  Click "Add player" to get started
-                </Typography>
-              </TableCell>
-            </TableRow>
-          </TableBody>
+          <PlayersTableEmptyState />
         ) : (
           <TableBody>
             {players.map((player: PlayerContact) => (
@@ -118,34 +114,29 @@ export default function PlayersTable({ players }: PlayersTableProps) {
         )}
       </Table>
 
-      <DeletePlayerDialog
+      <ConfirmDialog
         open={playerToDelete !== null}
-        onClose={() => setPlayerToDelete(null)}
-        onConfirm={() => {
-          if (playerToDelete) {
-            deletePlayer(playerToDelete.id, {
-              onSuccess: () => setPlayerToDelete(null),
-            });
-          }
-        }}
+        title="Delete player"
+        message={
+          <>
+            Are you sure you want to delete{' '}
+            <strong>
+              {playerToDelete?.name} {playerToDelete?.lastName}
+            </strong>
+            ? This action cannot be undone.
+          </>
+        }
+        confirmLabel="Delete"
         isPending={isDeleting}
-        playerName={playerToDelete ? `${playerToDelete.name} ${playerToDelete.lastName}` : ''}
+        onClose={() => setPlayerToDelete(null)}
+        onConfirm={handleDeleteConfirm}
       />
 
       <PlayerFormDialog
         key={playerToEdit?.id}
         open={playerToEdit !== null}
         onClose={() => setPlayerToEdit(null)}
-        onSubmit={(data) => {
-          if (playerToEdit) {
-            updatePlayer(
-              { id: playerToEdit.id, data: { ...data, matches: playerToEdit.matches } },
-              {
-                onSuccess: () => setPlayerToEdit(null),
-              },
-            );
-          }
-        }}
+        onSubmit={handleEditSubmit}
         isPending={isUpdating}
         defaultValues={{
           name: playerToEdit?.name ?? '',
@@ -156,6 +147,8 @@ export default function PlayersTable({ players }: PlayersTableProps) {
         title="Edit player"
         submitLabel="Update"
       />
+
+      {toast && <Toast message={toast.message} severity={toast.severity} onClose={hideToast} />}
     </TableContainer>
   );
 }

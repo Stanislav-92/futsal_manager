@@ -9,6 +9,7 @@ import {
   Stack,
   TextField,
 } from '@mui/material';
+import { validateEmail, validatePhone, validateRequired } from '@/shared/utils/validation.utils';
 
 type PlayerFormData = Omit<PlayerContact, 'id' | 'matches'>;
 
@@ -56,8 +57,7 @@ export default function PlayerFormDialog({
             error={!!errors.name}
             helperText={errors.name?.message}
             {...register('name', {
-              required: 'Name is required',
-              validate: (value) => value.trim() !== '' || 'Name is required',
+              validate: (value) => validateRequired(value, 'Name'),
             })}
           />
           <TextField
@@ -65,8 +65,7 @@ export default function PlayerFormDialog({
             error={!!errors.lastName}
             helperText={errors.lastName?.message}
             {...register('lastName', {
-              required: 'Last name is required',
-              validate: (value) => value.trim() !== '' || 'Last name is required',
+              validate: (value) => validateRequired(value, 'Last name'),
             })}
           />
           <TextField
@@ -74,9 +73,7 @@ export default function PlayerFormDialog({
             error={!!errors.email}
             helperText={errors.email?.message}
             {...register('email', {
-              required: 'Email is required',
-              validate: (value) => value.trim() !== '' || 'Email is required',
-              pattern: { value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/, message: 'Invalid email' },
+              validate: validateEmail,
             })}
           />
           <TextField
@@ -84,9 +81,7 @@ export default function PlayerFormDialog({
             error={!!errors.phone}
             helperText={errors.phone?.message}
             {...register('phone', {
-              required: 'Phone is required',
-              validate: (value) => value.trim() !== '' || 'Phone is required',
-              pattern: { value: /^\d{9}$/, message: 'Phone must be 9 digits' },
+              validate: validatePhone,
             })}
           />
         </Stack>
