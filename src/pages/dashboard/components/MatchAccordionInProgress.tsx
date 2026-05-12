@@ -1,26 +1,47 @@
-import { Box, Button, Chip, Stack, TextField, Typography } from '@mui/material';
+import {
+  Box,
+  Button,
+  Chip,
+  FormControlLabel,
+  Radio,
+  RadioGroup,
+  Stack,
+  TextField,
+  Tooltip,
+  Typography,
+} from '@mui/material';
 import type { Match } from '../types/match.types';
 import MatchTeamsDisplay from './MatchTeamsDisplay';
 import { useState } from 'react';
 import { scoreInputSlotProps, scoreInputSx } from './MatchAccordionInProgress.styles';
+import type { TeamBalanceMode } from '../types/teamBalanceMode.types';
+import { TEAM_BALANCE_OPTIONS } from '../constants/teamBalanceOptions.constants';
+import type { PlayerRating } from '../utils/teamBalancer.utils';
 
 interface MatchAccordionInProgressProps {
   match: Match;
   isPending: boolean;
-  onGenerateTeams: () => void;
+  playerRatings: PlayerRating[];
+  onGenerateTeams: (mode: TeamBalanceMode) => void;
   onCompleteMatch: (scoreA: number, scoreB: number) => void;
 }
 
 export default function MatchAccordionInProgress({
   match,
   isPending,
+  playerRatings,
   onGenerateTeams,
   onCompleteMatch,
 }: MatchAccordionInProgressProps) {
   const [scoreA, setScoreA] = useState<number | null>(null);
   const [scoreB, setScoreB] = useState<number | null>(null);
 
+  const [balanceMode, setBalanceMode] = useState<TeamBalanceMode | null>(null);
+  const [generatedMode, setGeneratedMode] = useState<TeamBalanceMode | null>(null);
+
+  const balanceOptions = TEAM_BALANCE_OPTIONS;
   const teamsGenerated = match.teamA.length > 0;
+  const canGenerate = balanceMode !== null;
   const canComplete = scoreA !== null && scoreB !== null;
 
   const handleScoreChange = (
@@ -37,26 +58,58 @@ export default function MatchAccordionInProgress({
 
   return (
     <Box>
-      {!teamsGenerated ? (
-        <Box>
-          <Typography variant="body2" color="textSecondary" sx={{ mb: 1 }}>
-            Players ({match.playerSnapshots.length})
-          </Typography>
-          <Stack direction="row" flexWrap="wrap" gap={1} sx={{ mb: 2 }}>
-            {match.playerSnapshots.map((player) => (
-              <Chip key={player.id} label={`${player.name} ${player.lastName}`} size="small" />
+      <Box>
+        <Typography variant="body2" color="textSecondary" sx={{ mb: 1 }}>
+          Players ({match.playerSnapshots.length})
+        </Typography>
+        <Stack direction="row" flexWrap="wrap" gap={1} sx={{ mb: 2 }}>
+          {match.playerSnapshots.map((player) => (
+            <Chip key={player.id} label={`${player.name} ${player.lastName}`} size="small" />
+          ))}
+        </Stack>
+        <Stack direction="row" alignItems="center" gap={6} sx={{ mb: 3 }}>
+          <RadioGroup
+            row
+            value={balanceMode ?? ''}
+            onChange={(e) => setBalanceMode(e.target.value as TeamBalanceMode)}
+          >
+            {balanceOptions.map((option) => (
+              <Tooltip key={option.value} title={option.tooltip} arrow placement="top">
+                <FormControlLabel
+                  value={option.value}
+                  control={<Radio size="small" />}
+                  label={option.label}
+                />
+              </Tooltip>
             ))}
-          </Stack>
-          <Typography variant="body2" color="textSecondary" sx={{ mb: 1 }}>
-            Generate teams to proceed
-          </Typography>
-          <Button variant="outlined" onClick={onGenerateTeams} disabled={isPending}>
-            Generate teams
+          </RadioGroup>
+          <Button
+            variant="outlined"
+            onClick={() => {
+              onGenerateTeams(balanceMode as TeamBalanceMode);
+              setGeneratedMode(balanceMode);
+            }}
+            disabled={!canGenerate || isPending}
+          >
+            {teamsGenerated ? 'Regenerate teams' : 'Generate teams'}
           </Button>
-        </Box>
-      ) : (
+          {teamsGenerated && generatedMode && (
+            <Typography variant="body2" color="textSecondary" sx={{ ml: 'auto' }}>
+              Team balancing type:{' '}
+              <strong>{balanceOptions.find((o) => o.value === generatedMode)?.label}</strong>
+            </Typography>
+          )}
+        </Stack>
+      </Box>
+
+      {teamsGenerated && (
         <Box>
-          <MatchTeamsDisplay match={match} />
+          <MatchTeamsDisplay
+            match={match}
+            balanceMode={generatedMode}
+            currentMode={balanceMode}
+            playerRatings={playerRatings}
+          />
 
           <Stack direction="row" alignItems="center" justifyContent="center" gap={2} sx={{ mb: 3 }}>
             <Typography variant="body2" fontWeight={500}>

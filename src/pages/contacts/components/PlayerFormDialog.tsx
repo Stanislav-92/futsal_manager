@@ -56,6 +56,7 @@ export default function PlayerFormDialog({
             label="Name"
             error={!!errors.name}
             helperText={errors.name?.message}
+            disabled={!!defaultValues}
             {...register('name', {
               validate: (value) => validateRequired(value, 'Name'),
             })}
@@ -64,6 +65,7 @@ export default function PlayerFormDialog({
             label="Last name"
             error={!!errors.lastName}
             helperText={errors.lastName?.message}
+            disabled={!!defaultValues}
             {...register('lastName', {
               validate: (value) => validateRequired(value, 'Last name'),
             })}

@@ -1,0 +1,25 @@
+export const FULL_TABLE_COLUMNS = [
+  { label: 'Player', key: 'name', sortable: false },
+  { label: 'MP', key: 'matches', tooltip: 'Matches Played', sortable: true },
+  { label: 'W', key: 'wins', tooltip: 'Wins', sortable: true },
+  { label: 'L', key: 'losses', tooltip: 'Losses', sortable: true },
+  { label: 'D', key: 'draws', tooltip: 'Draws', sortable: true },
+  { label: 'Pts', key: 'points', tooltip: 'Points', sortable: true },
+  { label: 'Pts/G', key: 'avgPoints', tooltip: 'Average Points per Game', sortable: true },
+  { label: 'Win%', key: 'winRate', tooltip: 'Win Rate', sortable: true },
+  { label: 'GS', key: 'goalsScored', tooltip: 'Goals Scored', sortable: true },
+  {
+    label: 'GS/G',
+    key: 'avgGoalsScored',
+    tooltip: 'Average Goals Scored per Game',
+    sortable: true,
+  },
+  { label: 'GC', key: 'goalsConceded', tooltip: 'Goals Conceded', sortable: true },
+  {
+    label: 'GC/G',
+    key: 'avgGoalsConceded',
+    tooltip: 'Average Goals Conceded per Game',
+    sortable: true,
+  },
+  { label: 'GD', key: 'goalDifference', tooltip: 'Goal Difference', sortable: true },
+];

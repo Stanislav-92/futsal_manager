@@ -1,5 +1,11 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { addPlayer, deletePlayer, getPlayers, updatePlayer } from '../api/players.api';
+import {
+  addPlayer,
+  deletePlayer,
+  getPlayers,
+  incrementalMatchCount,
+  updatePlayer,
+} from '../api/players.api';
 import type { PlayerContact } from '../types/player.types';
 
 export const playersQueryKey = ['players'];
@@ -58,5 +64,13 @@ export const useUpdatePlayer = () => {
     mutationFn: ({ id, data }: { id: string; data: Omit<PlayerContact, 'id'> }) =>
       updatePlayer(id, data),
     onSuccess: () => queryClient.invalidateQueries({ queryKey: playersQueryKey }),
+  });
+};
+
+export const useIncrementalMatchCount = () => {
+  const queryClinet = useQueryClient();
+  return useMutation({
+    mutationFn: (ids: string[]) => incrementalMatchCount(ids),
+    onSuccess: () => queryClinet.invalidateQueries({ queryKey: playersQueryKey }),
   });
 };
