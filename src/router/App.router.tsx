@@ -8,6 +8,7 @@ import LoadingSpinner from '@/shared/components/LoadingSpinner';
 const DashboardPage = lazy(() => import('@/pages/dashboard/DashboardPage'));
 const StatisticsPage = lazy(() => import('@/pages/statistics/StatisticsPage'));
 const ContactsPage = lazy(() => import('@/pages/contacts/ContactsPage'));
+const PlayerPage = lazy(() => import('@/pages/players/PlayerPage'));
 
 export const router = createBrowserRouter([
   {
@@ -36,6 +37,14 @@ export const router = createBrowserRouter([
         element: (
           <Suspense fallback={<LoadingSpinner />}>
             <ContactsPage />
+          </Suspense>
+        ),
+      },
+      {
+        path: AppRoutes.PlayerProfile,
+        element: (
+          <Suspense fallback={<LoadingSpinner />}>
+            <PlayerPage />
           </Suspense>
         ),
       },

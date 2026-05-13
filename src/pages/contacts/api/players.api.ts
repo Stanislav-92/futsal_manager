@@ -3,6 +3,7 @@ import {
   collection,
   deleteDoc,
   doc,
+  getDoc,
   getDocs,
   query,
   updateDoc,
@@ -45,4 +46,18 @@ export const updatePlayer = async (
 
 export const deletePlayer = async (id: string): Promise<void> => {
   await deleteDoc(doc(playersCollection, id));
+};
+
+export const incrementalMatchCount = async (ids: string[]): Promise<void> => {
+  const snapshots = await Promise.all(ids.map((id) => getDoc(doc(playersCollection, id))));
+
+  await Promise.all(
+    snapshots
+      .filter((snapshot) => snapshot.exists())
+      .map((snapshot) =>
+        updateDoc(snapshot.ref, {
+          matches: (snapshot.data() as PlayerContact).matches + 1,
+        }),
+      ),
+  );
 };

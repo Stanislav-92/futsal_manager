@@ -10,7 +10,7 @@ import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import type { Match } from '../types/match.types';
 import dayjs from 'dayjs';
 import type { PlayerContact } from '@/pages/contacts/types/player.types';
-import { useRef, useState } from 'react';
+import { useMemo, useRef, useState } from 'react';
 import { useDeleteMatch, useUpdateMatch } from '../hooks/matches.queries';
 import { useToast } from '@/shared/hooks/useToast';
 import Toast from '@/shared/components/Toast';
@@ -19,22 +19,38 @@ import MatchAccordionOpen from './MatchAccordionOpen';
 import MatchAccordionInProgress from './MatchAccordionInProgress';
 import MatchAccordionCompleted from './MatchAccordionCompleted';
 import { DISPLAY_DATE_FORMAT } from '@/shared/constants/date.constants';
+import { useIncrementalMatchCount } from '@/pages/contacts/hooks/players.queries';
+import type { TeamBalanceMode } from '../types/teamBalanceMode.types';
+import { calculatePlayerStats } from '@/pages/statistics/utils/playerStats.utils';
+import { balanceTeams, type PlayerRating } from '../utils/teamBalancer.utils';
 
 interface MatchAccordionProps {
+  matches: Match[];
   match: Match;
   players: PlayerContact[];
   onMatchUpdated?: (message: string) => void;
 }
 
-export default function MatchAccordion({ match, players, onMatchUpdated }: MatchAccordionProps) {
+export default function MatchAccordion({
+  matches,
+  match,
+  players,
+  onMatchUpdated,
+}: MatchAccordionProps) {
   const [expanded, setIsExpanded] = useState(match.status === 'open');
+  const [playerRatings, setPlayerRatings] = useState<PlayerRating[]>([]);
 
   const { mutate: updateMatch, isPending } = useUpdateMatch();
   const { mutate: deleteMatch, isPending: isDeleting } = useDeleteMatch();
+  const { mutate: incrementMatchCount } = useIncrementalMatchCount();
   const { toast, showToast, hideToast } = useToast();
+
+  const allPlayersStats = useMemo(() => calculatePlayerStats(players, matches), [players, matches]);
 
   const accordionRef = useRef<HTMLDivElement>(null);
   const status = STATUS_CONFIG[match.status];
+
+  const activePlayerIds = players.map((p) => p.id);
 
   const handleAddPlayer = (playerId: string) => {
     const player = players.find((player) => player.id === playerId);
@@ -77,12 +93,16 @@ export default function MatchAccordion({ match, players, onMatchUpdated }: Match
     });
   };
 
-  const handleGenerateTeams = () => {
-    const shuffled = [...match.playerSnapshots.map((p) => p.id)].sort(() => Math.random() - 0.5);
-    const mid = Math.ceil(shuffled.length / 2);
+  const handleGenerateTeams = (mode: TeamBalanceMode) => {
+    const { teamA, teamB, playerRatings } = balanceTeams(
+      match.playerSnapshots,
+      allPlayersStats,
+      mode,
+    );
+    setPlayerRatings(playerRatings ?? []);
     updateMatch({
       id: match.id,
-      data: { teamA: shuffled.slice(0, mid), teamB: shuffled.slice(mid) },
+      data: { teamA, teamB },
     });
   };
 
@@ -96,7 +116,10 @@ export default function MatchAccordion({ match, players, onMatchUpdated }: Match
         },
       },
       {
-        onSuccess: () => onMatchUpdated?.('Match completed'),
+        onSuccess: () => {
+          incrementMatchCount(match.playerSnapshots.map((p) => p.id));
+          onMatchUpdated?.('Match completed');
+        },
         onError: () => showToast('Failed to complete match', 'error'),
       },
     );
@@ -126,7 +149,7 @@ export default function MatchAccordion({ match, players, onMatchUpdated }: Match
       >
         <AccordionSummary expandIcon={<ExpandMoreIcon />}>
           <Box sx={{ display: 'flex', alignItems: 'center', gap: 6, width: '100%', pr: 2 }}>
-            <Typography variant="body2" color="textSecondary" sx={{ minWidth: 80 }}>
+            <Typography variant="body2" color="textSecondary" sx={{ width: 128, flexShrink: 0 }}>
               {dayjs(match.date).format(DISPLAY_DATE_FORMAT)}
             </Typography>
             <Box sx={{ flex: 1 }}>
@@ -162,11 +185,14 @@ export default function MatchAccordion({ match, players, onMatchUpdated }: Match
             <MatchAccordionInProgress
               match={match}
               isPending={isPending}
+              playerRatings={playerRatings}
               onGenerateTeams={handleGenerateTeams}
               onCompleteMatch={handleCompleteMatch}
             />
           )}
-          {match.status === 'completed' && <MatchAccordionCompleted match={match} />}
+          {match.status === 'completed' && (
+            <MatchAccordionCompleted match={match} activePlayerIds={activePlayerIds} />
+          )}
         </AccordionDetails>
       </Accordion>
 

@@ -35,7 +35,7 @@ export default function ContactsPage() {
   };
 
   return (
-    <Box sx={{ maxWidth: '90%', mx: 'auto' }}>
+    <Box sx={{ width: '90%', mx: 'auto' }}>
       <Stack
         direction={{ xs: 'column', sm: 'row' }}
         justifyContent="space-between"

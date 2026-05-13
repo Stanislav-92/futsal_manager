@@ -100,7 +100,12 @@ export default function DashboardPage() {
           >
             Active
           </Typography>
-          <MatchAccordion match={activeMatch} players={players} onMatchUpdated={showToast} />
+          <MatchAccordion
+            matches={matches}
+            match={activeMatch}
+            players={players}
+            onMatchUpdated={showToast}
+          />
         </Box>
       )}
 
@@ -117,6 +122,7 @@ export default function DashboardPage() {
             {completedMatches.map((match) => (
               <MatchAccordion
                 key={match.id}
+                matches={matches}
                 match={match}
                 players={players}
                 onMatchUpdated={showToast}
