@@ -2,8 +2,10 @@ import { useState } from 'react';
 import type { PlayerContact } from '../types/player.types';
 import { useDeletePlayer, useUpdatePlayer } from './players.queries';
 import { useToast } from '@/shared/hooks/useToast';
+import { useTranslation } from 'react-i18next';
 
 export const usePlayersTableActions = () => {
+  const { t } = useTranslation();
   const [playerToDelete, setPlayerToDelete] = useState<PlayerContact | null>(null);
   const [playerToEdit, setPlayerToEdit] = useState<PlayerContact | null>(null);
   const { mutate: deletePlayer, isPending: isDeleting } = useDeletePlayer();
@@ -17,9 +19,9 @@ export const usePlayersTableActions = () => {
     deletePlayer(playerToDelete.id, {
       onSuccess: () => {
         setPlayerToDelete(null);
-        showToast('Player deleted successfully');
+        showToast(t('contacts.deleteSuccess'));
       },
-      onError: () => showToast('Failed to delete player', 'error'),
+      onError: () => showToast(t('contacts.deleteError'), 'error'),
     });
   };
 
@@ -31,9 +33,9 @@ export const usePlayersTableActions = () => {
       {
         onSuccess: () => {
           setPlayerToEdit(null);
-          showToast('Player updated successfully');
+          showToast(t('contacts.updateSuccess'));
         },
-        onError: () => showToast('Failed to update player', 'error'),
+        onError: () => showToast(t('contacts.updateError'), 'error'),
       },
     );
   };

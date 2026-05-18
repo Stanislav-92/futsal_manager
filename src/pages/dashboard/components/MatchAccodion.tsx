@@ -23,6 +23,7 @@ import { useIncrementalMatchCount } from '@/pages/contacts/hooks/players.queries
 import type { TeamBalanceMode } from '../types/teamBalanceMode.types';
 import { calculatePlayerStats } from '@/pages/statistics/utils/playerStats.utils';
 import { balanceTeams, type PlayerRating } from '../utils/teamBalancer.utils';
+import { useTranslation } from 'react-i18next';
 
 interface MatchAccordionProps {
   matches: Match[];
@@ -37,6 +38,7 @@ export default function MatchAccordion({
   players,
   onMatchUpdated,
 }: MatchAccordionProps) {
+  const { t } = useTranslation();
   const [expanded, setIsExpanded] = useState(match.status === 'open');
   const [playerRatings, setPlayerRatings] = useState<PlayerRating[]>([]);
 
@@ -78,8 +80,8 @@ export default function MatchAccordion({
     updateMatch(
       { id: match.id, data: { status: 'in_progress' } },
       {
-        onSuccess: () => showToast('Match started'),
-        onError: () => showToast('Failed to start match', 'error'),
+        onSuccess: () => showToast(t('match.started')),
+        onError: () => showToast(t('match.startError'), 'error'),
       },
     );
   };
@@ -87,9 +89,9 @@ export default function MatchAccordion({
   const handleCancelConfirm = () => {
     deleteMatch(match.id, {
       onSuccess: () => {
-        onMatchUpdated?.('Match cancelled');
+        onMatchUpdated?.(t('match.cancelled'));
       },
-      onError: () => showToast('Failed to cancel match', 'error'),
+      onError: () => showToast(t('match.cancelError'), 'error'),
     });
   };
 
@@ -118,9 +120,9 @@ export default function MatchAccordion({
       {
         onSuccess: () => {
           incrementMatchCount(match.playerSnapshots.map((p) => p.id));
-          onMatchUpdated?.('Match completed');
+          onMatchUpdated?.(t('match.completed'));
         },
-        onError: () => showToast('Failed to complete match', 'error'),
+        onError: () => showToast(t('match.completeError'), 'error'),
       },
     );
   };
@@ -154,10 +156,10 @@ export default function MatchAccordion({
             </Typography>
             <Box sx={{ flex: 1 }}>
               <Typography variant="body1" fontWeight={500}>
-                Match
+                {t('common.match')}
               </Typography>
               <Typography color="textSecondary">
-                {match.playerSnapshots.length} / 12 players
+                {t('match.playersCount', { count: match.playerSnapshots.length })}
               </Typography>
             </Box>
             {match.status === 'completed' && match.result && (
@@ -165,7 +167,7 @@ export default function MatchAccordion({
                 {match.result.scoreA} — {match.result.scoreB}
               </Typography>
             )}
-            <Chip label={status.label} color={status.color} size="small" />
+            <Chip label={t(status.labelKey)} color={status.color} size="small" />
           </Box>
         </AccordionSummary>
         <AccordionDetails>

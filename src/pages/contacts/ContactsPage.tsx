@@ -8,8 +8,10 @@ import PlayerFormDialog from './components/PlayerFormDialog';
 import { useToast } from '@/shared/hooks/useToast';
 import Toast from '@/shared/components/Toast';
 import type { PlayerContact } from './types/player.types';
+import { useTranslation } from 'react-i18next';
 
 export default function ContactsPage() {
+  const { t } = useTranslation();
   const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
   const { data: players = [], isLoading, isError } = usePlayers();
   const { mutate: addPlayer, isPending } = useAddPlayer();
@@ -17,7 +19,7 @@ export default function ContactsPage() {
   const { toast, showToast, hideToast } = useToast();
 
   if (isLoading) return <LoadingSpinner />;
-  if (isError) return <Alert severity="error">Failed to load players</Alert>;
+  if (isError) return <Alert severity="error">{t('contacts.loadError')}</Alert>;
 
   const handleAddPlayer = (data: Omit<PlayerContact, 'id' | 'matches'>) => {
     addPlayer(
@@ -25,7 +27,7 @@ export default function ContactsPage() {
       {
         onSuccess: () => {
           setIsAddDialogOpen(false);
-          showToast('Player added successfully');
+          showToast(t('contacts.addSuccess'));
         },
         onError: (error) => {
           showToast(error.message, 'error');
@@ -45,10 +47,10 @@ export default function ContactsPage() {
       >
         <Box>
           <Typography variant="h5" sx={{ mb: 1 }}>
-            Players
+            {t('contacts.title')}
           </Typography>
           <Typography variant="body1" color="textSecondary">
-            Manage player contacts
+            {t('contacts.subtitle')}
           </Typography>
         </Box>
 
@@ -57,7 +59,7 @@ export default function ContactsPage() {
           startIcon={<AddIcon />}
           onClick={() => setIsAddDialogOpen(true)}
         >
-          Add player
+          {t('contacts.addPlayer')}
         </Button>
       </Stack>
 
@@ -69,8 +71,8 @@ export default function ContactsPage() {
         onClose={() => setIsAddDialogOpen(false)}
         onSubmit={handleAddPlayer}
         isPending={isPending}
-        title="Add player"
-        submitLabel="Save"
+        title={t('contacts.addPlayer')}
+        submitLabel={t('common.save')}
       />
 
       {toast && <Toast message={toast.message} severity={toast.severity} onClose={hideToast} />}

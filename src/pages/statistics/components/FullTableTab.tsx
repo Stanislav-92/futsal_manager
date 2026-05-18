@@ -15,6 +15,7 @@ import type { PlayerStats } from '../types/playerStats.types';
 import { useNavigate } from 'react-router-dom';
 import { formatCellValue } from '@/shared/utils/formatCellValue.utils';
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 
 interface FullTableTabProps {
   stats: PlayerStats[];
@@ -22,6 +23,7 @@ interface FullTableTabProps {
 }
 
 export default function FullTableTab({ stats, activePlayerIds }: FullTableTabProps) {
+  const { t } = useTranslation();
   const [sortKey, setSortKey] = useState<keyof PlayerStats>('matches');
   const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('desc');
 
@@ -53,7 +55,7 @@ export default function FullTableTab({ stats, activePlayerIds }: FullTableTabPro
   if (sortedStats.length === 0) {
     return (
       <Typography variant="body2" color="textSecondary">
-        No data yet
+        {t('statistics.noData')}
       </Typography>
     );
   }
@@ -71,21 +73,25 @@ export default function FullTableTab({ stats, activePlayerIds }: FullTableTabPro
       <Table size="small">
         <TableHead>
           <TableRow sx={{ backgroundColor: '#f8fafc' }}>
-            {columns.map((col) => (
-              <TableCell key={col.key} sx={{ fontWeight: 600, whiteSpace: 'nowrap' }}>
-                {col.sortable ? (
-                  <TableSortLabel
-                    active={sortKey === col.key}
-                    direction={sortKey === col.key ? sortOrder : 'desc'}
-                    onClick={() => handleSort(col.key as keyof PlayerStats)}
-                  >
-                    <Box title={col.tooltip}>{col.label}</Box>
-                  </TableSortLabel>
-                ) : (
-                  <Box title={col.tooltip}>{col.label}</Box>
-                )}
-              </TableCell>
-            ))}
+            {columns.map((col) => {
+              const label = t(col.labelKey);
+              const tooltip = col.tooltipKey ? t(col.tooltipKey) : undefined;
+              return (
+                <TableCell key={col.key} sx={{ fontWeight: 600, whiteSpace: 'nowrap' }}>
+                  {col.sortable ? (
+                    <TableSortLabel
+                      active={sortKey === col.key}
+                      direction={sortKey === col.key ? sortOrder : 'desc'}
+                      onClick={() => handleSort(col.key as keyof PlayerStats)}
+                    >
+                      <Box title={tooltip}>{label}</Box>
+                    </TableSortLabel>
+                  ) : (
+                    <Box title={tooltip}>{label}</Box>
+                  )}
+                </TableCell>
+              );
+            })}
           </TableRow>
         </TableHead>
         <TableBody>

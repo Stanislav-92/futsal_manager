@@ -1,20 +1,23 @@
 import type { TeamBalanceMode } from '../types/teamBalanceMode.types';
 
-export const TEAM_BALANCE_OPTIONS: { value: TeamBalanceMode; label: string; tooltip: string }[] = [
+export const TEAM_BALANCE_OPTIONS: {
+  value: TeamBalanceMode;
+  labelKey: string;
+  tooltipKey: string;
+}[] = [
   {
     value: 'powerIndex',
-    label: 'Power Index',
-    tooltip:
-      'Balances teams based on win rate (40%), average points (40%), and goal difference (20%).',
+    labelKey: 'teamBalance.powerIndex',
+    tooltipKey: 'teamBalance.powerIndexTooltip',
   },
   {
     value: 'winRate',
-    label: 'Win Rate',
-    tooltip: 'Balances teams purely based on win percentage.',
+    labelKey: 'teamBalance.winRate',
+    tooltipKey: 'teamBalance.winRateTooltip',
   },
   {
     value: 'random',
-    label: 'Random',
-    tooltip: 'Randomly assigns players to teams.',
+    labelKey: 'teamBalance.random',
+    tooltipKey: 'teamBalance.randomTooltip',
   },
 ];

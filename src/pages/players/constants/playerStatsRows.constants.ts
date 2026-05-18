@@ -1,14 +1,16 @@
-export const PLAYER_STATS_ROWS = [
-  { label: 'Matches Played', key: 'matches' },
-  { label: 'Win Rate', key: 'winRate' },
-  { label: 'Wins', key: 'wins' },
-  { label: 'Draws', key: 'draws' },
-  { label: 'Losses', key: 'losses' },
-  { label: 'Points', key: 'points' },
-  { label: 'Avg Points', key: 'avgPoints' },
-  { label: 'Goals Scored', key: 'goalsScored' },
-  { label: 'Avg Goals Scored', key: 'avgGoalsScored' },
-  { label: 'Goals Conceded', key: 'goalsConceded' },
-  { label: 'Avg Goals Conceded', key: 'avgGoalsConceded' },
-  { label: 'Goal Difference', key: 'goalDifference' },
+import type { PlayerStats } from '@/pages/statistics/types/playerStats.types';
+
+export const PLAYER_STATS_ROWS: { labelKey: string; key: keyof PlayerStats }[] = [
+  { labelKey: 'playerPage.matchesPlayed', key: 'matches' },
+  { labelKey: 'playerPage.winRate', key: 'winRate' },
+  { labelKey: 'playerPage.wins', key: 'wins' },
+  { labelKey: 'playerPage.draws', key: 'draws' },
+  { labelKey: 'playerPage.losses', key: 'losses' },
+  { labelKey: 'playerPage.points', key: 'points' },
+  { labelKey: 'playerPage.avgPoints', key: 'avgPoints' },
+  { labelKey: 'playerPage.goalsScored', key: 'goalsScored' },
+  { labelKey: 'playerPage.avgGoalsScored', key: 'avgGoalsScored' },
+  { labelKey: 'playerPage.goalsConceded', key: 'goalsConceded' },
+  { labelKey: 'playerPage.avgGoalsConceded', key: 'avgGoalsConceded' },
+  { labelKey: 'playerPage.goalDifference', key: 'goalDifference' },
 ];

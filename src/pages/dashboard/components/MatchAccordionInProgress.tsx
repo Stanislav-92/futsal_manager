@@ -17,6 +17,7 @@ import { scoreInputSlotProps, scoreInputSx } from './MatchAccordionInProgress.st
 import type { TeamBalanceMode } from '../types/teamBalanceMode.types';
 import { TEAM_BALANCE_OPTIONS } from '../constants/teamBalanceOptions.constants';
 import type { PlayerRating } from '../utils/teamBalancer.utils';
+import { useTranslation } from 'react-i18next';
 
 interface MatchAccordionInProgressProps {
   match: Match;
@@ -33,6 +34,7 @@ export default function MatchAccordionInProgress({
   onGenerateTeams,
   onCompleteMatch,
 }: MatchAccordionInProgressProps) {
+  const { t } = useTranslation();
   const [scoreA, setScoreA] = useState<number | null>(null);
   const [scoreB, setScoreB] = useState<number | null>(null);
 
@@ -60,7 +62,7 @@ export default function MatchAccordionInProgress({
     <Box>
       <Box>
         <Typography variant="body2" color="textSecondary" sx={{ mb: 1 }}>
-          Players ({match.playerSnapshots.length})
+          {t('match.playersOnly', { count: match.playerSnapshots.length })}
         </Typography>
         <Stack direction="row" flexWrap="wrap" gap={1} sx={{ mb: 2 }}>
           {match.playerSnapshots.map((player) => (
@@ -74,11 +76,11 @@ export default function MatchAccordionInProgress({
             onChange={(e) => setBalanceMode(e.target.value as TeamBalanceMode)}
           >
             {balanceOptions.map((option) => (
-              <Tooltip key={option.value} title={option.tooltip} arrow placement="top">
+              <Tooltip key={option.value} title={t(option.tooltipKey)} arrow placement="top">
                 <FormControlLabel
                   value={option.value}
                   control={<Radio size="small" />}
-                  label={option.label}
+                  label={t(option.labelKey)}
                 />
               </Tooltip>
             ))}
@@ -91,12 +93,12 @@ export default function MatchAccordionInProgress({
             }}
             disabled={!canGenerate || isPending}
           >
-            {teamsGenerated ? 'Regenerate teams' : 'Generate teams'}
+            {teamsGenerated ? t('match.regenerateTeams') : t('match.generateTeams')}
           </Button>
           {teamsGenerated && generatedMode && (
             <Typography variant="body2" color="textSecondary" sx={{ ml: 'auto' }}>
-              Team balancing type:{' '}
-              <strong>{balanceOptions.find((o) => o.value === generatedMode)?.label}</strong>
+              {t('match.balancingType')}{' '}
+              <strong>{t(balanceOptions.find((o) => o.value === generatedMode)!.labelKey)}</strong>
             </Typography>
           )}
         </Stack>
@@ -113,7 +115,7 @@ export default function MatchAccordionInProgress({
 
           <Stack direction="row" alignItems="center" justifyContent="center" gap={2} sx={{ mb: 3 }}>
             <Typography variant="body2" fontWeight={500}>
-              Team A
+              {t('common.teamA')}
             </Typography>
             <TextField
               type="number"
@@ -137,14 +139,14 @@ export default function MatchAccordionInProgress({
               sx={scoreInputSx}
             />
             <Typography variant="body2" fontWeight={500}>
-              Team B
+              {t('common.teamB')}
             </Typography>
           </Stack>
 
           <Stack direction="row" justifyContent="flex-end" alignItems="center" gap={3}>
             {!canComplete && (
               <Typography variant="body2" color="textSecondary">
-                Set a score to complete a match
+                {t('match.setScoreHint')}
               </Typography>
             )}
             <Button
@@ -153,7 +155,7 @@ export default function MatchAccordionInProgress({
               disabled={isPending || !canComplete}
               onClick={handleComplete}
             >
-              Complete match
+              {t('match.completeMatch')}
             </Button>
           </Stack>
         </Box>

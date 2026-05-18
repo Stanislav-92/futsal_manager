@@ -10,6 +10,7 @@ import {
   TextField,
 } from '@mui/material';
 import { validateEmail, validatePhone, validateRequired } from '@/shared/utils/validation.utils';
+import { useTranslation } from 'react-i18next';
 
 type PlayerFormData = Omit<PlayerContact, 'id' | 'matches'>;
 
@@ -32,6 +33,7 @@ export default function PlayerFormDialog({
   title,
   submitLabel,
 }: PlayerFormDialogProps) {
+  const { t } = useTranslation();
   const {
     register,
     handleSubmit,
@@ -53,25 +55,25 @@ export default function PlayerFormDialog({
       <DialogContent>
         <Stack spacing={2} sx={{ pt: 1 }}>
           <TextField
-            label="Name"
+            label={t('fields.name')}
             error={!!errors.name}
             helperText={errors.name?.message}
             disabled={!!defaultValues}
             {...register('name', {
-              validate: (value) => validateRequired(value, 'Name'),
+              validate: (value) => validateRequired(value, t('fields.name')),
             })}
           />
           <TextField
-            label="Last name"
+            label={t('fields.lastName')}
             error={!!errors.lastName}
             helperText={errors.lastName?.message}
             disabled={!!defaultValues}
             {...register('lastName', {
-              validate: (value) => validateRequired(value, 'Last name'),
+              validate: (value) => validateRequired(value, t('fields.lastName')),
             })}
           />
           <TextField
-            label="Email"
+            label={t('fields.email')}
             error={!!errors.email}
             helperText={errors.email?.message}
             {...register('email', {
@@ -79,7 +81,7 @@ export default function PlayerFormDialog({
             })}
           />
           <TextField
-            label="Phone"
+            label={t('fields.phone')}
             error={!!errors.phone}
             helperText={errors.phone?.message}
             {...register('phone', {
@@ -91,7 +93,7 @@ export default function PlayerFormDialog({
 
       <DialogActions sx={{ gap: 1, px: 3, pb: 2 }}>
         <Button onClick={handleClose} disabled={isPending}>
-          Cancel
+          {t('common.cancel')}
         </Button>
         <Button onClick={handleSubmit(onSubmit)} variant="contained" loading={isPending}>
           {submitLabel}

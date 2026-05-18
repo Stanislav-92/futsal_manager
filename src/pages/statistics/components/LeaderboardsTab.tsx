@@ -1,6 +1,7 @@
 import { Grid } from '@mui/material';
 import LeaderboardBlock from './LeaderboardBlock';
 import type { PlayerStats } from '../types/playerStats.types';
+import { useTranslation } from 'react-i18next';
 
 interface LeaderboardsTabProps {
   stats: PlayerStats[];
@@ -10,11 +11,13 @@ interface LeaderboardsTabProps {
 const gridSize = { xs: 12, sm: 6, md: 4 };
 
 export default function LeaderboardsTab({ stats, activePlayerIds }: LeaderboardsTabProps) {
+  const { t } = useTranslation();
+
   return (
     <Grid container spacing={3}>
       <Grid size={gridSize}>
         <LeaderboardBlock
-          title="Win Rate"
+          title={t('leaderboards.winRate')}
           stats={stats}
           activePlayerIds={activePlayerIds}
           getValue={(stat) => stat.winRate}
@@ -23,7 +26,7 @@ export default function LeaderboardsTab({ stats, activePlayerIds }: Leaderboards
       </Grid>
       <Grid size={gridSize}>
         <LeaderboardBlock
-          title="Wins"
+          title={t('leaderboards.wins')}
           stats={stats}
           activePlayerIds={activePlayerIds}
           getValue={(stat) => stat.wins}
@@ -32,7 +35,7 @@ export default function LeaderboardsTab({ stats, activePlayerIds }: Leaderboards
       </Grid>
       <Grid size={gridSize}>
         <LeaderboardBlock
-          title="Average Points"
+          title={t('leaderboards.avgPoints')}
           stats={stats}
           activePlayerIds={activePlayerIds}
           getValue={(stat) => stat.avgPoints}
@@ -41,7 +44,7 @@ export default function LeaderboardsTab({ stats, activePlayerIds }: Leaderboards
       </Grid>
       <Grid size={gridSize}>
         <LeaderboardBlock
-          title="Draws"
+          title={t('leaderboards.draws')}
           stats={stats}
           activePlayerIds={activePlayerIds}
           getValue={(stat) => stat.draws}
@@ -50,7 +53,7 @@ export default function LeaderboardsTab({ stats, activePlayerIds }: Leaderboards
       </Grid>
       <Grid size={gridSize}>
         <LeaderboardBlock
-          title="Losses"
+          title={t('leaderboards.losses')}
           stats={stats}
           activePlayerIds={activePlayerIds}
           getValue={(stat) => stat.losses}
@@ -59,7 +62,7 @@ export default function LeaderboardsTab({ stats, activePlayerIds }: Leaderboards
       </Grid>
       <Grid size={gridSize}>
         <LeaderboardBlock
-          title="Matches"
+          title={t('leaderboards.matches')}
           stats={stats}
           activePlayerIds={activePlayerIds}
           getValue={(stat) => stat.matches}
@@ -68,7 +71,7 @@ export default function LeaderboardsTab({ stats, activePlayerIds }: Leaderboards
       </Grid>
       <Grid size={gridSize}>
         <LeaderboardBlock
-          title="Goal Difference"
+          title={t('leaderboards.goalDifference')}
           stats={stats}
           activePlayerIds={activePlayerIds}
           getValue={(stat) => stat.goalDifference}
@@ -77,7 +80,7 @@ export default function LeaderboardsTab({ stats, activePlayerIds }: Leaderboards
       </Grid>
       <Grid size={gridSize}>
         <LeaderboardBlock
-          title="Average Goals Scored"
+          title={t('leaderboards.avgGoalsScored')}
           stats={stats}
           activePlayerIds={activePlayerIds}
           getValue={(stat) => stat.avgGoalsScored}
@@ -86,7 +89,7 @@ export default function LeaderboardsTab({ stats, activePlayerIds }: Leaderboards
       </Grid>
       <Grid size={gridSize}>
         <LeaderboardBlock
-          title="Average Goals Conceded"
+          title={t('leaderboards.avgGoalsConceded')}
           stats={stats}
           activePlayerIds={activePlayerIds}
           getValue={(stat) => stat.avgGoalsConceded}

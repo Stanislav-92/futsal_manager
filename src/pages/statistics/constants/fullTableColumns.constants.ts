@@ -1,25 +1,61 @@
-export const FULL_TABLE_COLUMNS = [
-  { label: 'Player', key: 'name', sortable: false },
-  { label: 'MP', key: 'matches', tooltip: 'Matches Played', sortable: true },
-  { label: 'W', key: 'wins', tooltip: 'Wins', sortable: true },
-  { label: 'L', key: 'losses', tooltip: 'Losses', sortable: true },
-  { label: 'D', key: 'draws', tooltip: 'Draws', sortable: true },
-  { label: 'Pts', key: 'points', tooltip: 'Points', sortable: true },
-  { label: 'Pts/G', key: 'avgPoints', tooltip: 'Average Points per Game', sortable: true },
-  { label: 'Win%', key: 'winRate', tooltip: 'Win Rate', sortable: true },
-  { label: 'GS', key: 'goalsScored', tooltip: 'Goals Scored', sortable: true },
+import type { PlayerStats } from '../types/playerStats.types';
+
+export type FullTableColumnKey = keyof PlayerStats | 'name';
+
+export interface FullTableColumnDef {
+  key: FullTableColumnKey;
+  labelKey: string;
+  tooltipKey?: string;
+  sortable: boolean;
+}
+
+export const FULL_TABLE_COLUMNS: FullTableColumnDef[] = [
+  { key: 'name', labelKey: 'fullTable.player', sortable: false },
+  { key: 'matches', labelKey: 'fullTable.mp', tooltipKey: 'fullTable.tooltipMp', sortable: true },
+  { key: 'wins', labelKey: 'fullTable.w', tooltipKey: 'fullTable.tooltipW', sortable: true },
+  { key: 'losses', labelKey: 'fullTable.l', tooltipKey: 'fullTable.tooltipL', sortable: true },
+  { key: 'draws', labelKey: 'fullTable.d', tooltipKey: 'fullTable.tooltipD', sortable: true },
+  { key: 'points', labelKey: 'fullTable.pts', tooltipKey: 'fullTable.tooltipPts', sortable: true },
   {
-    label: 'GS/G',
+    key: 'avgPoints',
+    labelKey: 'fullTable.ptsPerGame',
+    tooltipKey: 'fullTable.tooltipPtsPerGame',
+    sortable: true,
+  },
+  {
+    key: 'winRate',
+    labelKey: 'fullTable.winPercent',
+    tooltipKey: 'fullTable.tooltipWinPercent',
+    sortable: true,
+  },
+  {
+    key: 'goalsScored',
+    labelKey: 'fullTable.gs',
+    tooltipKey: 'fullTable.tooltipGs',
+    sortable: true,
+  },
+  {
     key: 'avgGoalsScored',
-    tooltip: 'Average Goals Scored per Game',
+    labelKey: 'fullTable.gsPerGame',
+    tooltipKey: 'fullTable.tooltipGsPerGame',
     sortable: true,
   },
-  { label: 'GC', key: 'goalsConceded', tooltip: 'Goals Conceded', sortable: true },
   {
-    label: 'GC/G',
-    key: 'avgGoalsConceded',
-    tooltip: 'Average Goals Conceded per Game',
+    key: 'goalsConceded',
+    labelKey: 'fullTable.gc',
+    tooltipKey: 'fullTable.tooltipGc',
     sortable: true,
   },
-  { label: 'GD', key: 'goalDifference', tooltip: 'Goal Difference', sortable: true },
+  {
+    key: 'avgGoalsConceded',
+    labelKey: 'fullTable.gcPerGame',
+    tooltipKey: 'fullTable.tooltipGcPerGame',
+    sortable: true,
+  },
+  {
+    key: 'goalDifference',
+    labelKey: 'fullTable.gd',
+    tooltipKey: 'fullTable.tooltipGd',
+    sortable: true,
+  },
 ];

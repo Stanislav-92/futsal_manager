@@ -27,12 +27,14 @@ import PlayerFormDialog from './PlayerFormDialog';
 import Toast from '@/shared/components/Toast';
 import PlayersTableEmptyState from './PlayersTableEmptyState';
 import { usePlayersTableActions } from '../hooks/usePlayersTableActions';
+import { Trans, useTranslation } from 'react-i18next';
 
 interface PlayersTableProps {
   players: PlayerContact[];
 }
 
 export default function PlayersTable({ players }: PlayersTableProps) {
+  const { t } = useTranslation();
   const {
     playerToDelete,
     playerToEdit,
@@ -49,22 +51,22 @@ export default function PlayersTable({ players }: PlayersTableProps) {
   return (
     <TableContainer component={Paper} elevation={0} sx={tableContainerSx}>
       <Box sx={tableHeaderSx}>
-        <Typography variant="h6">Players list</Typography>
+        <Typography variant="h6">{t('contacts.playersList')}</Typography>
         <Typography variant="body2" color="textSecondary">
-          {players.length} player(s)
+          {t('contacts.playersCount', { count: players.length })}
         </Typography>
       </Box>
 
       <Table>
         <TableHead>
           <TableRow sx={tableHeadRowSx}>
-            <TableCell sx={tableHeadCellSx}>Name</TableCell>
-            <TableCell sx={tableHeadCellSx}>Last name</TableCell>
-            <TableCell sx={tableHeadCellSx}>Email</TableCell>
-            <TableCell sx={tableHeadCellSx}>Phone</TableCell>
-            <TableCell sx={tableHeadCellSx}>Matches</TableCell>
+            <TableCell sx={tableHeadCellSx}>{t('fields.name')}</TableCell>
+            <TableCell sx={tableHeadCellSx}>{t('fields.lastName')}</TableCell>
+            <TableCell sx={tableHeadCellSx}>{t('fields.email')}</TableCell>
+            <TableCell sx={tableHeadCellSx}>{t('fields.phone')}</TableCell>
+            <TableCell sx={tableHeadCellSx}>{t('leaderboards.matches')}</TableCell>
             <TableCell sx={tableHeadCellSx} align="right">
-              Actions
+              {t('common.actions')}
             </TableCell>
           </TableRow>
         </TableHead>
@@ -87,7 +89,7 @@ export default function PlayersTable({ players }: PlayersTableProps) {
                   <Chip label={player.matches} size="small" variant="outlined" />
                 </TableCell>
                 <TableCell align="right">
-                  <Tooltip title="Edit player">
+                  <Tooltip title={t('contacts.editTooltip')}>
                     <IconButton
                       size="small"
                       color="primary"
@@ -97,7 +99,7 @@ export default function PlayersTable({ players }: PlayersTableProps) {
                       <EditIcon fontSize="small" />
                     </IconButton>
                   </Tooltip>
-                  <Tooltip title="Delete player">
+                  <Tooltip title={t('contacts.deleteTooltip')}>
                     <IconButton
                       size="small"
                       color="error"
@@ -116,17 +118,17 @@ export default function PlayersTable({ players }: PlayersTableProps) {
 
       <ConfirmDialog
         open={playerToDelete !== null}
-        title="Delete player"
+        title={t('contacts.deleteTitle')}
         message={
-          <>
-            Are you sure you want to delete{' '}
-            <strong>
-              {playerToDelete?.name} {playerToDelete?.lastName}
-            </strong>
-            ? This action cannot be undone.
-          </>
+          <Trans
+            i18nKey="contacts.deleteMessage"
+            values={{
+              name: `${playerToDelete?.name ?? ''} ${playerToDelete?.lastName ?? ''}`.trim(),
+            }}
+            components={{ strong: <strong /> }}
+          />
         }
-        confirmLabel="Delete"
+        confirmLabel={t('common.delete')}
         isPending={isDeleting}
         onClose={() => setPlayerToDelete(null)}
         onConfirm={handleDeleteConfirm}
@@ -144,8 +146,8 @@ export default function PlayersTable({ players }: PlayersTableProps) {
           email: playerToEdit?.email ?? '',
           phone: playerToEdit?.phone ?? '',
         }}
-        title="Edit player"
-        submitLabel="Update"
+        title={t('contacts.editPlayer')}
+        submitLabel={t('common.update')}
       />
 
       {toast && <Toast message={toast.message} severity={toast.severity} onClose={hideToast} />}

@@ -5,33 +5,36 @@ import { NavLink } from 'react-router-dom';
 import { navButtonStyles } from './MainNavigation.styles';
 import { useState } from 'react';
 import InfoDialog from './components/InfoDialog';
+import LanguageSwitcher from './components/LanguageSwitcher';
+import { useTranslation } from 'react-i18next';
 
 export default function MainNavigation() {
   const [isInfoOpen, setIsInfoOpen] = useState(false);
+  const { t } = useTranslation();
 
   return (
     <AppBar position="sticky">
       <Toolbar>
         <Typography variant="h6" component="div">
-          Futsal Manager
+          {t('app.title')}
         </Typography>
         <Stack direction="row" spacing={4} sx={{ ml: 20 }}>
           <Button component={NavLink} to={AppRoutes.Dashboard} end sx={navButtonStyles}>
-            Dashboard
+            {t('nav.dashboard')}
           </Button>
           <Button component={NavLink} to={AppRoutes.Statistics} sx={navButtonStyles}>
-            Statistics
+            {t('nav.statistics')}
           </Button>
           <Button component={NavLink} to={AppRoutes.Contacts} sx={navButtonStyles}>
-            Contacts
+            {t('nav.contacts')}
           </Button>
         </Stack>
-        <IconButton
-          onClick={() => setIsInfoOpen(true)}
-          sx={{ color: 'white', ml: 'auto', mr: '5%' }}
-        >
-          <InfoOutlinedIcon />
-        </IconButton>
+        <Stack direction="row" alignItems="center" spacing={4} sx={{ ml: 'auto', mr: '5%' }}>
+          <IconButton onClick={() => setIsInfoOpen(true)} sx={{ color: 'white' }}>
+            <InfoOutlinedIcon />
+          </IconButton>
+          <LanguageSwitcher />
+        </Stack>
       </Toolbar>
       <InfoDialog open={isInfoOpen} onClose={() => setIsInfoOpen(false)} />
     </AppBar>

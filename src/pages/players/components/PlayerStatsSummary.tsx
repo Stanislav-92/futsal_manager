@@ -2,6 +2,7 @@ import type { PlayerStats } from '@/pages/statistics/types/playerStats.types';
 import { PLAYER_STATS_ROWS } from '../constants/playerStatsRows.constants';
 import { Box, Divider, Typography } from '@mui/material';
 import { formatCellValue } from '@/shared/utils/formatCellValue.utils';
+import { useTranslation } from 'react-i18next';
 
 interface PlayerStatsSummaryProps {
   playerStats: PlayerStats;
@@ -9,6 +10,7 @@ interface PlayerStatsSummaryProps {
 }
 
 export default function PlayerStatsSummary({ playerStats, playerName }: PlayerStatsSummaryProps) {
+  const { t } = useTranslation();
   const statsRows = PLAYER_STATS_ROWS;
 
   return (
@@ -21,7 +23,7 @@ export default function PlayerStatsSummary({ playerStats, playerName }: PlayerSt
         {statsRows.map((row, index) => (
           <Box key={row.key} sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
             <Typography variant="body2" color="textSecondary">
-              {row.label}:
+              {t(row.labelKey)}:
             </Typography>
             <Typography variant="body2" fontWeight={600}>
               {formatCellValue(row.key, playerStats[row.key as keyof PlayerStats] as number)}

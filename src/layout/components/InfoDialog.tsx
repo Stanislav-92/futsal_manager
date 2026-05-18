@@ -7,6 +7,7 @@ import {
   Divider,
   Typography,
 } from '@mui/material';
+import { Trans, useTranslation } from 'react-i18next';
 
 interface InfoDialogProps {
   open: boolean;
@@ -14,61 +15,76 @@ interface InfoDialogProps {
 }
 
 export default function InfoDialog({ open, onClose }: InfoDialogProps) {
+  const { t } = useTranslation();
+
   return (
     <Dialog open={open} onClose={onClose} maxWidth="sm" fullWidth>
-      <DialogTitle>How Futsal Manager works</DialogTitle>
+      <DialogTitle>{t('info.title')}</DialogTitle>
       <DialogContent>
         <Typography variant="subtitle1" fontWeight={600} sx={{ mb: 1 }}>
-          Matches
+          {t('info.matchesTitle')}
         </Typography>
         <Typography variant="body2" color="textSecondary" sx={{ mb: 2 }}>
-          Create a match, add 8-12 players, then start it. Once started, generate balanced teams
-          using one of three algorithms. Enter the final score to complete the match.
+          {t('info.matchesBody')}
         </Typography>
 
         <Divider sx={{ mb: 2 }} />
 
         <Typography variant="subtitle1" fontWeight={600} sx={{ mb: 1 }}>
-          Team Balancing
+          {t('info.balancingTitle')}
         </Typography>
-        <Typography variant="body2" color="textSecondary" sx={{ mb: 1 }}>
-          <strong>Power Index</strong> - balances teams based on win rate (40%), average points per
-          game (40%), and goal difference (20%). Best for competitive balance.
+        <Typography
+          variant="body2"
+          color="textSecondary"
+          sx={{ mb: 1 }}
+          component="span"
+          display="block"
+        >
+          <Trans i18nKey="info.powerIndexBody" />
         </Typography>
-        <Typography variant="body2" color="textSecondary" sx={{ mb: 1 }}>
-          <strong>Win Rate</strong> - balances teams purely based on win percentage.
+        <Typography
+          variant="body2"
+          color="textSecondary"
+          sx={{ mb: 1 }}
+          component="span"
+          display="block"
+        >
+          <Trans i18nKey="info.winRateBody" />
         </Typography>
-        <Typography variant="body2" color="textSecondary" sx={{ mb: 2 }}>
-          <strong>Random</strong> - randomly assigns players to teams.
+        <Typography
+          variant="body2"
+          color="textSecondary"
+          sx={{ mb: 2 }}
+          component="span"
+          display="block"
+        >
+          <Trans i18nKey="info.randomBody" />
         </Typography>
         <Typography variant="caption" color="textSecondary">
-          * Players with less than 2 matches receive a default neutral rating of 0.33.
+          {t('info.ratingNote')}
         </Typography>
 
         <Divider sx={{ mb: 2, mt: 2 }} />
 
         <Typography variant="subtitle1" fontWeight={600} sx={{ mb: 1 }}>
-          Statistics
+          {t('info.statisticsTitle')}
         </Typography>
         <Typography variant="body2" color="textSecondary" sx={{ mb: 2 }}>
-          After completing matches, player statistics are automatically updated. View leaderboards
-          and full table on the Statistics page. Click on any player to see their personal profile
-          with charts and detailed stats.
+          {t('info.statisticsBody')}
         </Typography>
 
         <Divider sx={{ mb: 2 }} />
 
         <Typography variant="subtitle1" fontWeight={600} sx={{ mb: 1 }}>
-          Players
+          {t('info.playersTitle')}
         </Typography>
         <Typography variant="body2" color="textSecondary">
-          Manage player contacts on the Contacts page. Players added to matches are stored as
-          snapshots - even if a player is deleted, their name remains in completed match history.
+          {t('info.playersBody')}
         </Typography>
       </DialogContent>
       <DialogActions sx={{ px: 3, pb: 2 }}>
         <Button onClick={onClose} variant="contained">
-          Got it
+          {t('common.gotIt')}
         </Button>
       </DialogActions>
     </Dialog>

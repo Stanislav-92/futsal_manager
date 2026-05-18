@@ -10,8 +10,10 @@ import { usePlayers } from '../contacts/hooks/players.queries';
 import { useToast } from '@/shared/hooks/useToast';
 import Toast from '@/shared/components/Toast';
 import { DATE_FORMAT } from '@/shared/constants/date.constants';
+import { useTranslation } from 'react-i18next';
 
 export default function DashboardPage() {
+  const { t } = useTranslation();
   const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false);
   const { data: matches = [], isLoading, isError } = useMatches();
   const { mutate: addMatch, isPending } = useAddMatch();
@@ -26,7 +28,7 @@ export default function DashboardPage() {
   const completedMatches = matches.filter((match) => match.status === 'completed');
 
   if (isLoading) return <LoadingSpinner />;
-  if (isError) return <Alert severity="error">Failed to load matches</Alert>;
+  if (isError) return <Alert severity="error">{t('dashboard.loadError')}</Alert>;
 
   const handleCreateMatch = (data: CreateMatchFormData) => {
     addMatch(
@@ -40,9 +42,9 @@ export default function DashboardPage() {
       {
         onSuccess: () => {
           setIsCreateDialogOpen(false);
-          showToast('Match created successfully');
+          showToast(t('dashboard.createSuccess'));
         },
-        onError: () => showToast('Failed to create match', 'error'),
+        onError: () => showToast(t('dashboard.createError'), 'error'),
       },
     );
   };
@@ -58,14 +60,14 @@ export default function DashboardPage() {
       >
         <Box>
           <Typography variant="h5" sx={{ mb: 1 }}>
-            Dashboard
+            {t('dashboard.title')}
           </Typography>
           <Typography variant="body1" color="textSecondary">
-            Manage matches
+            {t('dashboard.subtitle')}
           </Typography>
         </Box>
 
-        <Tooltip title={activeMatch ? 'Finish the active match first' : ''}>
+        <Tooltip title={activeMatch ? t('dashboard.finishActiveFirst') : ''}>
           <span>
             <Button
               variant="contained"
@@ -73,7 +75,7 @@ export default function DashboardPage() {
               onClick={() => setIsCreateDialogOpen(true)}
               disabled={!!activeMatch}
             >
-              Create match
+              {t('dashboard.createMatch')}
             </Button>
           </span>
         </Tooltip>
@@ -83,10 +85,10 @@ export default function DashboardPage() {
         <Box sx={{ textAlign: 'center', py: 8 }}>
           <EventIcon sx={{ fontSize: 48, color: 'text.secondary', mb: 1 }} />
           <Typography variant="body1" color="textSecondary">
-            No matches yet
+            {t('dashboard.noMatches')}
           </Typography>
           <Typography variant="body2" color="textSecondary">
-            Click "Create match" to get started
+            {t('dashboard.noMatchesHint')}
           </Typography>
         </Box>
       )}
@@ -98,7 +100,7 @@ export default function DashboardPage() {
             color="textSecondary"
             sx={{ mb: 1, fontWeight: 500, ml: '16px' }}
           >
-            Active
+            {t('dashboard.active')}
           </Typography>
           <MatchAccordion
             matches={matches}
@@ -116,7 +118,7 @@ export default function DashboardPage() {
             color="textSecondary"
             sx={{ mb: 1, fontWeight: 500, ml: '16px' }}
           >
-            Archive
+            {t('dashboard.archive')}
           </Typography>
           <Stack spacing={1}>
             {completedMatches.map((match) => (

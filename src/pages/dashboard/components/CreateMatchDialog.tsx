@@ -4,6 +4,7 @@ import { DatePicker, LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import dayjs from 'dayjs';
 import { validateMatchDate } from '@/shared/utils/date.utils';
+import { useTranslation } from 'react-i18next';
 
 export interface CreateMatchFormData {
   date: dayjs.Dayjs | null;
@@ -22,6 +23,7 @@ export default function CreateMatchDialog({
   onSubmit,
   isPending,
 }: CreateMatchDialogProps) {
+  const { t } = useTranslation();
   const {
     control,
     handleSubmit,
@@ -37,7 +39,7 @@ export default function CreateMatchDialog({
   return (
     <LocalizationProvider dateAdapter={AdapterDayjs}>
       <Dialog open={open} onClose={handleClose} fullWidth maxWidth="xs">
-        <DialogTitle>Create match</DialogTitle>
+        <DialogTitle>{t('createMatch.title')}</DialogTitle>
 
         <DialogContent>
           <Controller
@@ -45,12 +47,12 @@ export default function CreateMatchDialog({
             control={control}
             defaultValue={null}
             rules={{
-              required: 'Date is required',
+              required: t('createMatch.dateRequired'),
               validate: validateMatchDate,
             }}
             render={({ field }) => (
               <DatePicker
-                label="Select date"
+                label={t('createMatch.selectDate')}
                 format="DD/MM/YYYY"
                 minDate={dayjs()}
                 slotProps={{
@@ -69,10 +71,10 @@ export default function CreateMatchDialog({
 
         <DialogActions sx={{ gap: 1, px: 3, pb: 2 }}>
           <Button onClick={handleClose} disabled={isPending}>
-            Cancel
+            {t('common.cancel')}
           </Button>
           <Button variant="contained" loading={isPending} onClick={handleSubmit(onSubmit)}>
-            Create
+            {t('common.create')}
           </Button>
         </DialogActions>
       </Dialog>

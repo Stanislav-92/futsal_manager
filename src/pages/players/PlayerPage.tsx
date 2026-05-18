@@ -9,8 +9,10 @@ import { Alert, Box, Button } from '@mui/material';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import PlayerCharts from './components/PlayerCharts';
 import PlayerStatsSummary from './components/PlayerStatsSummary';
+import { useTranslation } from 'react-i18next';
 
 export default function PlayerPage() {
+  const { t } = useTranslation();
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
 
@@ -31,13 +33,13 @@ export default function PlayerPage() {
   }, [id, matches]);
 
   if (isMatchesLoading || isPlayersLoading) return <LoadingSpinner />;
-  if (!player) return <Alert severity="error">Player not found</Alert>;
-  if (!playerStats) return <Alert severity="error">No stats available</Alert>;
+  if (!player) return <Alert severity="error">{t('playerPage.notFound')}</Alert>;
+  if (!playerStats) return <Alert severity="error">{t('playerPage.noStats')}</Alert>;
 
   return (
     <Box sx={{ width: '90%', mx: 'auto' }}>
       <Button startIcon={<ArrowBackIcon />} onClick={() => navigate(-1)} sx={{ mb: 2 }}>
-        Back
+        {t('common.back')}
       </Button>
 
       <PlayerStatsSummary

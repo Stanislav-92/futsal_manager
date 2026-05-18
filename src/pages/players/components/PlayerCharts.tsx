@@ -17,6 +17,7 @@ import {
   XAxis,
   YAxis,
 } from 'recharts';
+import { useTranslation } from 'react-i18next';
 
 interface PlayerChartsProps {
   chartData: MatchChartData[];
@@ -24,10 +25,12 @@ interface PlayerChartsProps {
 }
 
 export default function PlayerCharts({ chartData, playerStats }: PlayerChartsProps) {
+  const { t } = useTranslation();
+
   const pieChartData = [
-    { name: 'Wins', value: playerStats.wins, fill: CHART_COLORS.green },
-    { name: 'Losses', value: playerStats.losses, fill: CHART_COLORS.red },
-    { name: 'Draws', value: playerStats.draws, fill: CHART_COLORS.orange },
+    { name: t('playerPage.chartWins'), value: playerStats.wins, fill: CHART_COLORS.green },
+    { name: t('playerPage.chartLosses'), value: playerStats.losses, fill: CHART_COLORS.red },
+    { name: t('playerPage.chartDraws'), value: playerStats.draws, fill: CHART_COLORS.orange },
   ].filter((item) => item.value > 0);
 
   return (
@@ -35,14 +38,14 @@ export default function PlayerCharts({ chartData, playerStats }: PlayerChartsPro
       <Grid size={gridSize}>
         <Paper elevation={0} sx={chartContainerSx}>
           <Typography variant="h6" sx={{ mb: 2 }}>
-            Win Rate over time
+            {t('playerPage.chartWinRateOverTime')}
           </Typography>
           <ResponsiveContainer width="100%" height={250}>
             <LineChart data={chartData} margin={{ bottom: 20 }}>
               <CartesianGrid strokeDasharray="3 3" />
               <XAxis
                 dataKey="matchIndex"
-                label={{ value: 'Match', position: 'insideBottom', offset: -15 }}
+                label={{ value: t('playerPage.chartMatch'), position: 'insideBottom', offset: -15 }}
               />
               <YAxis unit="%" domain={[0, 100]} />
               <Tooltip formatter={(value) => `${value}%`} />
@@ -52,7 +55,7 @@ export default function PlayerCharts({ chartData, playerStats }: PlayerChartsPro
                 stroke={CHART_COLORS.blue}
                 strokeWidth={2}
                 dot={false}
-                name="Win Rate"
+                name={t('playerPage.chartWinRate')}
               />
             </LineChart>
           </ResponsiveContainer>
@@ -61,14 +64,14 @@ export default function PlayerCharts({ chartData, playerStats }: PlayerChartsPro
       <Grid size={gridSize}>
         <Paper elevation={0} sx={chartContainerSx}>
           <Typography variant="h6" sx={{ mb: 2 }}>
-            Avg Goals over time
+            {t('playerPage.chartAvgGoalsOverTime')}
           </Typography>
           <ResponsiveContainer width="100%" height={250}>
             <LineChart data={chartData} margin={{ bottom: 20 }}>
               <CartesianGrid strokeDasharray="3 3" />
               <XAxis
                 dataKey="matchIndex"
-                label={{ value: 'Match', position: 'insideBottom', offset: -15 }}
+                label={{ value: t('playerPage.chartMatch'), position: 'insideBottom', offset: -15 }}
               />
               <YAxis />
               <Tooltip />
@@ -78,7 +81,7 @@ export default function PlayerCharts({ chartData, playerStats }: PlayerChartsPro
                 stroke={CHART_COLORS.green}
                 strokeWidth={2}
                 dot={false}
-                name="Avg Goals"
+                name={t('playerPage.chartAvgGoals')}
               />
             </LineChart>
           </ResponsiveContainer>
@@ -87,14 +90,14 @@ export default function PlayerCharts({ chartData, playerStats }: PlayerChartsPro
       <Grid size={gridSize}>
         <Paper elevation={0} sx={chartContainerSx}>
           <Typography variant="h6" sx={{ mb: 2 }}>
-            Goals per match
+            {t('playerPage.chartGoalsPerMatch')}
           </Typography>
           <ResponsiveContainer width="100%" height={250}>
             <BarChart data={chartData} margin={{ bottom: 0 }}>
               <CartesianGrid strokeDasharray="3 3" />
               <XAxis
                 dataKey="matchIndex"
-                label={{ value: 'Match', position: 'insideBottom', offset: -2 }}
+                label={{ value: t('playerPage.chartMatch'), position: 'insideBottom', offset: -2 }}
               />
               <YAxis />
               <Tooltip itemSorter={(item) => (item.dataKey === 'goalsScored' ? -1 : 1)} />
@@ -102,8 +105,16 @@ export default function PlayerCharts({ chartData, playerStats }: PlayerChartsPro
                 wrapperStyle={{ bottom: -10 }}
                 itemSorter={(item) => (item.dataKey === 'goalsScored' ? -1 : 1)}
               />
-              <Bar dataKey="goalsScored" fill={CHART_COLORS.blue} name="Goals Scored" />
-              <Bar dataKey="goalsConceded" fill={CHART_COLORS.red} name="Goals Conceded" />
+              <Bar
+                dataKey="goalsScored"
+                fill={CHART_COLORS.blue}
+                name={t('playerPage.chartGoalsScored')}
+              />
+              <Bar
+                dataKey="goalsConceded"
+                fill={CHART_COLORS.red}
+                name={t('playerPage.chartGoalsConceded')}
+              />
             </BarChart>
           </ResponsiveContainer>
         </Paper>
@@ -111,7 +122,7 @@ export default function PlayerCharts({ chartData, playerStats }: PlayerChartsPro
       <Grid size={gridSize}>
         <Paper elevation={0} sx={chartContainerSx}>
           <Typography variant="h6" sx={{ mb: 2 }}>
-            Results breakdown
+            {t('playerPage.chartResultsBreakdown')}
           </Typography>
           <ResponsiveContainer width="100%" height={250}>
             <PieChart>

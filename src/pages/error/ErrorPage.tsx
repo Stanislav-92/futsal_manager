@@ -1,22 +1,24 @@
 import MainNavigation from '@/layout/MainNavigation';
 import { Alert, Box, Typography } from '@mui/material';
 import { isRouteErrorResponse, useRouteError } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 
 export default function ErrorPage() {
+  const { t } = useTranslation();
   const error = useRouteError();
 
-  let title = 'Something went wrong';
-  let message = 'An unexpected error occurred.';
+  let title = t('errors.somethingWrong');
+  let message = t('errors.unexpected');
 
   if (isRouteErrorResponse(error)) {
     if (error.status === 500) {
-      title = 'Server error';
-      message = 'Something failed on the server.';
+      title = t('errors.serverError');
+      message = t('errors.serverFailed');
     }
 
     if (error.status === 404) {
-      title = 'Not found!';
-      message = 'Could not find resource or page.';
+      title = t('errors.notFound');
+      message = t('errors.notFoundResource');
     }
   }
 

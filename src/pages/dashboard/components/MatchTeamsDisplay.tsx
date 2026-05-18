@@ -3,6 +3,7 @@ import type { Match } from '../types/match.types';
 import { useNavigate } from 'react-router-dom';
 import type { TeamBalanceMode } from '../types/teamBalanceMode.types';
 import { calculateAvgRating, formatRating, type PlayerRating } from '../utils/teamBalancer.utils';
+import { useTranslation } from 'react-i18next';
 
 interface MatchTeamsDisplayProps {
   match: Match;
@@ -19,6 +20,7 @@ export default function MatchTeamsDisplay({
   currentMode,
   playerRatings,
 }: MatchTeamsDisplayProps) {
+  const { t } = useTranslation();
   const navigate = useNavigate();
 
   const showRatings =
@@ -38,14 +40,22 @@ export default function MatchTeamsDisplay({
     return `${name} ${lastName} (${formattedRating})${suffix}`;
   };
 
-  const getTeamTitle = (teamIds: string[], goals?: number, label = 'Team'): string => {
+  const getTeamTitle = (
+    teamIds: string[],
+    goals?: number,
+    teamLabelKey: 'common.teamA' | 'common.teamB' | 'common.team' = 'common.team',
+  ): string => {
+    const teamLabel = t(teamLabelKey);
     if (match.status === 'completed' && goals !== undefined) {
-      return `${label} — ${goals} goals`;
+      return t('match.teamGoals', { team: teamLabel, goals });
     }
     if (showRatings) {
-      return `${label} (avg: ${calculateAvgRating(teamIds, playerRatings, balanceMode)})`;
+      return t('match.teamAvg', {
+        team: teamLabel,
+        avg: calculateAvgRating(teamIds, playerRatings, balanceMode),
+      });
     }
-    return label;
+    return teamLabel;
   };
 
   const handleNavigateToPlayerProfile = (playerId: string) => {
@@ -59,7 +69,7 @@ export default function MatchTeamsDisplay({
       <Stack direction="row" gap={4}>
         <Box sx={{ flex: 1 }}>
           <Typography variant="body2" fontWeight={500} sx={{ mb: 1 }}>
-            {getTeamTitle(match.teamA, match.result?.scoreA, 'Team A')}
+            {getTeamTitle(match.teamA, match.result?.scoreA, 'common.teamA')}
           </Typography>
           <Stack direction="row" flexWrap="wrap" gap={1}>
             {match.teamA.map((id) => {
@@ -80,7 +90,7 @@ export default function MatchTeamsDisplay({
         </Box>
         <Box sx={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'flex-end' }}>
           <Typography variant="body2" fontWeight={500} sx={{ mb: 1, textAlign: 'right' }}>
-            {getTeamTitle(match.teamB, match.result?.scoreB, 'Team B')}
+            {getTeamTitle(match.teamB, match.result?.scoreB, 'common.teamB')}
           </Typography>
           <Stack direction="row" flexWrap="wrap" gap={1} justifyContent="flex-end">
             {match.teamB.map((id) => {
@@ -106,7 +116,7 @@ export default function MatchTeamsDisplay({
           color="textSecondary"
           sx={{ mt: 2, display: 'block', textAlign: 'right' }}
         >
-          * Default rating (0.33) applied for players with less than 2 matches
+          {t('match.defaultRatingNote')}
         </Typography>
       )}
     </Box>

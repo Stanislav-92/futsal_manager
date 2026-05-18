@@ -3,6 +3,7 @@ import type { Match } from '../types/match.types';
 import { useState } from 'react';
 import { Autocomplete, Box, Button, Chip, Stack, TextField, Typography } from '@mui/material';
 import ConfirmDialog from '@/shared/components/ConfirmDialog';
+import { useTranslation } from 'react-i18next';
 
 interface MatchAccordionOpenProps {
   match: Match;
@@ -25,6 +26,7 @@ export default function MatchAccordionOpen({
   onStartMatch,
   onCancelConfirm,
 }: MatchAccordionOpenProps) {
+  const { t } = useTranslation();
   const [selectedPlayerId, setSelectedPlayerId] = useState('');
   const [isCancelDialogOpen, setIsCancelDialogOpen] = useState(false);
 
@@ -53,7 +55,7 @@ export default function MatchAccordionOpen({
     <>
       <Box>
         <Typography variant="body2" color="textSecondary" sx={{ mb: 1 }}>
-          Players ({match.playerSnapshots.length}/12, min 8)
+          {t('match.playersMin', { count: match.playerSnapshots.length })}
         </Typography>
         <Stack direction="row" flexWrap="wrap" gap={1} sx={{ mb: 3 }}>
           {match.playerSnapshots.map((player) => (
@@ -75,14 +77,16 @@ export default function MatchAccordionOpen({
               onChange={(_, player) => setSelectedPlayerId(player?.id ?? '')}
               size="small"
               sx={{ width: '50%' }}
-              renderInput={(params) => <TextField {...params} placeholder="Select player..." />}
+              renderInput={(params) => (
+                <TextField {...params} placeholder={t('match.selectPlayer')} />
+              )}
             />
             <Button
               variant="contained"
               onClick={handleAddPlayer}
               disabled={!selectedPlayerId || isPending}
             >
-              Add
+              {t('common.add')}
             </Button>
           </Stack>
         )}
@@ -95,7 +99,7 @@ export default function MatchAccordionOpen({
             onClick={() => setIsCancelDialogOpen(true)}
             disabled={isDeleting}
           >
-            Cancel match
+            {t('match.cancelMatch')}
           </Button>
           <Button
             variant="contained"
@@ -103,16 +107,16 @@ export default function MatchAccordionOpen({
             disabled={!canStart || isPending || isDeleting}
             onClick={onStartMatch}
           >
-            {canStart ? 'Start match' : 'Start match (min 8)'}
+            {canStart ? t('match.startMatch') : t('match.startMatchMin')}
           </Button>
         </Stack>
       </Box>
 
       <ConfirmDialog
         open={isCancelDialogOpen}
-        title="Cancel match"
-        message="Are you sure you want to cancel this match? All player selections will be lost."
-        confirmLabel="Confirm"
+        title={t('match.cancelConfirmTitle')}
+        message={t('match.cancelConfirmMessage')}
+        confirmLabel={t('common.confirm')}
         isPending={isDeleting}
         onClose={() => setIsCancelDialogOpen(false)}
         onConfirm={handleCancelConfirm}
